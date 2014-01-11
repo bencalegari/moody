@@ -1,0 +1,62 @@
+<ul>
+  <li id="energy">
+    <h2>Energy Level</h2>
+    <ul class="btn-group-vertical sub-ul">
+      <li class="btn btn-default energy">0.0</li>
+      <li class="btn btn-default energy">0.25</li>
+      <li class="btn btn-default energy">0.50</li>
+      <li class="btn btn-default energy">0.75</li>
+      <li class="btn btn-default energy">1.00</li>
+    </ul>
+  </li>
+  <li id="valence">
+    <h2>Valence Level</h2>
+    <ul class="btn-group-vertical sub-ul">
+      <li class="btn btn-default valence">0.0</li>
+      <li class="btn btn-default valence">0.25</li>
+      <li class="btn btn-default valence">0.50</li>
+      <li class="btn btn-default valence">0.75</li>
+      <li class="btn btn-default valence">1.00</li>
+    </ul>
+  </li>
+
+  <li id="dance">
+    <h2>Dance Level</h2>
+    <ul class="btn-group-vertical sub-ul">
+      <li class="btn btn-default dance">0.0</li>
+      <li class="btn btn-default dance">0.25</li>
+      <li class="btn btn-default dance">0.50</li>
+      <li class="btn btn-default dance">0.75</li>
+      <li class="btn btn-default dance">1.00</li>
+    </ul>
+  </li>
+</ul>
+
+
+<script type="text/javascript">
+  $(document).ready(function(){
+    var arr = []
+    $(".energy").click(function(e){
+      e.preventDefault();
+      arr += e.target.innerHTML
+      $("#energy").hide();
+      $("#valence").show();
+
+    });
+
+    $(".valence").click(function(e){
+      e.preventDefault();
+      arr += e.target.innerHTML
+      $("#valence").hide();
+      $("#dance").show();
+    });
+
+    $(".dance").click(function(e){
+      e.preventDefault();
+      arr += e.target.innerHTML
+      console.log(arr);
+      $("#dance").hide();
+    });
+
+  });
+</script>
