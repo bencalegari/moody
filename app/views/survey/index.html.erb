@@ -30,15 +30,47 @@
       <li class="btn btn-default dance">1.00</li>
     </ul>
   </li>
+
+  <div id="all-results">
+    
+
+  </div>
 </ul>
 
 
 <script type="text/javascript">
+    function fetchGenrePlaylist(genre) {
+        var url = 'https://developer.echonest.com/api/v4/playlist/static?api_key=PVCRK6KSNUY4UYV0O';
+        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
+        $("#all_results").show();
+
+        $.getJSON(url, { 
+          'genre': genre, 
+          'format':'json', 
+          'limit' : true,
+          'results': 64, 
+          'type':'genre-radio'}, 
+
+                function(data) {
+                    if (! ('songs' in data.response)) {
+                        error("Can't find that genre");
+                    } else {
+                        var songs = data.response.songs;
+                        $("#all_results").show();
+                        fetchRdioTrackInfo(songs);
+                    }
+                }).error( 
+                    alert("SHITS FUCKED UP");
+                } );
+    }
+
+
   $(document).ready(function(){
+
     var arr = []
     $(".energy").click(function(e){
       e.preventDefault();
-      arr += e.target.innerHTML
+      arr += e.target.innerHTML;
       $("#energy").hide();
       $("#mood").show();
 
@@ -46,16 +78,17 @@
 
     $(".mood").click(function(e){
       e.preventDefault();
-      arr += e.target.innerHTML
+      arr += e.target.innerHTML;
       $("#mood").hide();
       $("#dance").show();
     });
 
     $(".dance").click(function(e){
       e.preventDefault();
-      arr += e.target.innerHTML
-      console.log(arr);
+      arr += e.target.innerHTML;
       $("#dance").hide();
+      fetchGenrePlaylist("rock");d
+
     });
   });
 </script>

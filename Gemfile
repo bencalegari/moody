@@ -35,3 +35,4 @@ end
 gem "normalize-rails"
 
 gem "bootstrap-sass"
+gem 'rack-cors'
