@@ -21,7 +21,7 @@
     </ul>
   </li>
 
-  <div id="all-results">
+  <div id="all-results" class="row">
 
   </div>
 </ul>
@@ -29,12 +29,12 @@
 
 <script type="text/javascript">
   function fetchPlaylist(values) {
-    var url = 'https://developer.echonest.com/api/v4/song/search?api_key=PVCRK6KSNUY4UYV0O';
+    var url = 'https://developer.echonest.com/api/v4/song/search?api_key=PVCRK6KSNUY4UYV0O&bucket=tracks&bucket=id:spotify-WW';
     $.getJSON(url, {
-          'bucket': 'id:spotify-WW',
+          'limit': true,
           'rank_type': 'familiarity',
-          'artist_min_hotttnesss': 0.7,
-          'results': 20,
+          'artist_min_hotttnesss': 0.5,
+          'results': 9,
           'min_energy': values[0][0],
           'max_energy': values[0][1],
           'mood'      : values[1],
@@ -44,7 +44,9 @@
         function(data) {
           var songs = data.response.songs;
           for(var i in songs) {
-            $('#all-results').append("<li>" + songs[i].artist_name  + ' - ' + songs[i].title + "</li>" );
+//            debugger;
+            var trackID = songs[i].tracks[0].foreign_id.replace(/-WW/, '');
+            $('#all-results').append("<iframe src='https://embed.spotify.com/?uri=" + trackID + "' width='300' height='80' frameborder='0' allowtransparency='true'></iframe>");
           }
         });
     }
@@ -84,6 +86,7 @@
             results.push(e.target.innerHTML);
             $("#dance").hide();
 
+            $('#all-results').append("<h4> You chose a(n) " + results[1] + ", " + results[0].toLowerCase() + " energy songs with " + results[2].toLowerCase() + " danceability. Here they are.</h4>");
             var values = []
 
             for(i in results) {
@@ -96,10 +99,9 @@
                 } else {
                     values[i] = results[i];
                 }
-
             }
-            fetchPlaylist(values);
 
+            fetchPlaylist(values);
         });
 
 
