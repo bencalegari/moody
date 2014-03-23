@@ -2,93 +2,106 @@
   <li id="energy">
     <h2>Energy Level</h2>
     <ul class="btn-group-vertical sub-ul">
-      <li class="btn btn-default energy">0.0</li>
-      <li class="btn btn-default energy">0.25</li>
-      <li class="btn btn-default energy">0.50</li>
-      <li class="btn btn-default energy">0.75</li>
-      <li class="btn btn-default energy">1.00</li>
+      <li class="btn btn-default energy">Low</li>
+      <li class="btn btn-default energy">Medium</li>
+      <li class="btn btn-default energy">High</li>
     </ul>
   </li>
   <li id="mood">
     <h2>Mood Level</h2>
-    <ul class="btn-group-vertical sub-ul">
-      <li class="btn btn-default mood">0.0</li>
-      <li class="btn btn-default mood">0.25</li>
-      <li class="btn btn-default mood">0.50</li>
-      <li class="btn btn-default mood">0.75</li>
-      <li class="btn btn-default mood">1.00</li>
-    </ul>
+    <ul class="btn-group-vertical sub-ul mood-list"></ul>
   </li>
 
   <li id="dance">
     <h2>Dance Level</h2>
     <ul class="btn-group-vertical sub-ul">
-      <li class="btn btn-default dance">0.0</li>
-      <li class="btn btn-default dance">0.25</li>
-      <li class="btn btn-default dance">0.50</li>
-      <li class="btn btn-default dance">0.75</li>
-      <li class="btn btn-default dance">1.00</li>
+      <li class="btn btn-default dance">Low</li>
+      <li class="btn btn-default dance">Medium</li>
+      <li class="btn btn-default dance">High</li>
     </ul>
   </li>
 
   <div id="all-results">
-    
 
   </div>
 </ul>
 
 
 <script type="text/javascript">
-    function fetchGenrePlaylist(genre) {
-        var url = 'https://developer.echonest.com/api/v4/playlist/static?api_key=PVCRK6KSNUY4UYV0O';
-        response.setHeader("Access-Control-Allow-Origin", request.getHeader("Origin"));
-        $("#all_results").show();
+  function fetchPlaylist(values) {
+    var url = 'https://developer.echonest.com/api/v4/song/search?api_key=PVCRK6KSNUY4UYV0O';
+    $.getJSON(url, {
+          'bucket': 'id:spotify-WW',
+          'rank_type': 'familiarity',
+          'artist_min_hotttnesss': 0.7,
+          'results': 20,
+          'min_energy': values[0][0],
+          'max_energy': values[0][1],
+          'mood'      : values[1],
+          'min_danceability': values[0][0],
+          'max_danceability': values[0][1]},
 
-        $.getJSON(url, { 
-          'genre': genre, 
-          'format':'json', 
-          'limit' : true,
-          'results': 64, 
-          'type':'genre-radio'}, 
+        function(data) {
+          var songs = data.response.songs;
+          for(var i in songs) {
+            $('#all-results').append("<li>" + songs[i].artist_name  + ' - ' + songs[i].title + "</li>" );
+          }
+        });
+    }
 
-                function(data) {
-                    if (! ('songs' in data.response)) {
-                        error("Can't find that genre");
-                    } else {
-                        var songs = data.response.songs;
-                        $("#all_results").show();
-                        fetchRdioTrackInfo(songs);
-                    }
-                }).error( 
-                    alert("SHITS FUCKED UP");
-                } );
+    var getMoods = function(){
+        $.getJSON('http://developer.echonest.com/api/v4/artist/list_terms?api_key=PVCRK6KSNUY4UYV0O&format=json&type=mood',
+            function(data) {
+                var moods = data.response.terms
+                for(var i in moods) {
+                    $('.mood-list').append("<li class='btn btn-default mood-option'>" + moods[i].name + "</li>");
+                }
+            }
+        );
     }
 
 
-  $(document).ready(function(){
+    $(document).ready(function(){
+        getMoods();
 
-    var arr = []
-    $(".energy").click(function(e){
-      e.preventDefault();
-      arr += e.target.innerHTML;
-      $("#energy").hide();
-      $("#mood").show();
+        var results = [];
+        $(".energy").click(function(e){
+            e.preventDefault();
+            results.push(e.target.innerHTML);
+            $("#energy").hide();
+            $("#mood").show();
+        });
+
+        $('body').on('click','.mood-option', function(e) {
+            e.preventDefault();
+            results.push(e.target.innerHTML);
+            $("#mood").hide();
+            $("#dance").show();
+        });
+
+        $(".dance").click(function(e){
+            e.preventDefault();
+            results.push(e.target.innerHTML);
+            $("#dance").hide();
+
+            var values = []
+
+            for(i in results) {
+                if (results[i] === 'Low') {
+                    values[i] = ([0,.33]);
+                } else if (results[i] === 'Medium') {
+                    values[i] = ([.33,.66]);
+                } else if (results[i] === 'High') {
+                    values[i] = ([.66,1]);
+                } else {
+                    values[i] = results[i];
+                }
+
+            }
+            fetchPlaylist(values);
+
+        });
+
 
     });
-
-    $(".mood").click(function(e){
-      e.preventDefault();
-      arr += e.target.innerHTML;
-      $("#mood").hide();
-      $("#dance").show();
-    });
-
-    $(".dance").click(function(e){
-      e.preventDefault();
-      arr += e.target.innerHTML;
-      $("#dance").hide();
-      fetchGenrePlaylist("rock");d
-
-    });
-  });
 </script>
