@@ -31,24 +31,25 @@
   function fetchPlaylist(values) {
     var url = 'https://developer.echonest.com/api/v4/song/search?api_key=PVCRK6KSNUY4UYV0O&bucket=tracks&bucket=id:spotify-WW';
     $.getJSON(url, {
-          'limit': true,
-          'rank_type': 'familiarity',
-          'artist_min_hotttnesss': 0.5,
-          'results': 9,
-          'min_energy': values[0][0],
-          'max_energy': values[0][1],
-          'mood'      : values[1],
-          'min_danceability': values[0][0],
-          'max_danceability': values[0][1]},
+      'limit': true,
+      'rank_type': 'familiarity',
+      'artist_min_hotttnesss': 0.5,
+      'results': 9,
+      'min_energy': values[0][0],
+      'max_energy': values[0][1],
+      'mood'      : values[1],
+      'min_danceability': values[0][0],
+      'max_danceability': values[0][1]},
 
-        function(data) {
-          var songs = data.response.songs;
-          for(var i in songs) {
-//            debugger;
-            var trackID = songs[i].tracks[0].foreign_id.replace(/-WW/, '');
-            $('#all-results').append("<iframe src='https://embed.spotify.com/?uri=" + trackID + "' width='300' height='80' frameborder='0' allowtransparency='true'></iframe>");
-          }
-        });
+      function(data) {
+        var songs = data.response.songs;
+        for(var i in songs) {
+          var trackID = songs[i].tracks[0].foreign_id.replace(/-WW/, '');
+          $('#all-results').append(
+            "<iframe src='https://embed.spotify.com/?uri=" + trackID + "' width='300' height='80' frameborder='0' allowtransparency='true'></iframe>"
+          );
+        }
+      });
     }
 
     var getMoods = function(){
